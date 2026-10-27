@@ -1,0 +1,19 @@
+# Secrets and local config
+config/config.php
+.env
+*.env
+
+# Uploaded files (user photos, SER documents)
+harimarket/uploads/*
+!harimarket/uploads/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Dependencies and logs
+node_modules/
+vendor/
+*.log
