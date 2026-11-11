@@ -23,17 +23,34 @@ if ($user_id) {
 
 $success = '';
 $error   = '';
+$allowedReasons = ['Prohibited Items', 'Misleading Description', 'Counterfeit', 'Offensive Content', 'Scam / Fraud', 'Other'];
+
+// A report must point at a real product or user, and never at yourself.
+if (!$product && !$reported_user) {
+    abort('Nothing to report. Open this page from a product or seller page.', 404);
+}
+$target_user_id = $product ? (int) $product['seller_id'] : $user_id;
+if ($target_user_id === (int) $user['id']) {
+    abort('You cannot report yourself or your own products.', 403);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reason  = trim($_POST['reason'] ?? '');
-    $details = trim($_POST['details'] ?? '');
-    
-    if (!$reason) {
+    $details = mb_substr(trim($_POST['details'] ?? ''), 0, 1000);
+
+    if (!in_array($reason, $allowedReasons, true)) {
         $error = 'Please select a reason for reporting.';
     } else {
-        $ins = $pdo->prepare('INSERT INTO reports (reporter_id, reported_user_id, product_id, reason, details) VALUES (?, ?, ?, ?, ?)');
-        $ins->execute([$user['id'], $user_id ?: null, $product_id ?: null, $reason, $details]);
-        $success = 'Report submitted. Our moderators will review it shortly.';
+        $dup = $pdo->prepare("SELECT 1 FROM reports WHERE reporter_id = ? AND status = 'pending'
+                              AND product_id <=> ? AND reported_user_id <=> ?");
+        $dup->execute([$user['id'], $product ? $product_id : null, $product ? null : $target_user_id]);
+        if ($dup->fetch()) {
+            $error = 'You already have a pending report for this. Moderators will review it soon.';
+        } else {
+            $ins = $pdo->prepare('INSERT INTO reports (reporter_id, reported_user_id, product_id, reason, details) VALUES (?, ?, ?, ?, ?)');
+            $ins->execute([$user['id'], $product ? null : $target_user_id, $product ? $product_id : null, $reason, $details ?: null]);
+            $success = 'Report submitted. Our moderators will review it shortly.';
+        }
     }
 }
 
