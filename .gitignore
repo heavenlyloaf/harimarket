@@ -1,11 +1,13 @@
-# Secrets and local config
-config/config.php
+# Secrets and local config (real credentials never go to GitHub)
+harimarket/config/config.php
+**/config/config.php
 .env
 *.env
 
-# Uploaded files (user photos, SER documents)
+# Uploaded files (user photos, SER documents). Folder rules stay in the repo.
 harimarket/uploads/*
 !harimarket/uploads/.gitkeep
+!harimarket/uploads/.htaccess
 
 # OS / editor
 .DS_Store
