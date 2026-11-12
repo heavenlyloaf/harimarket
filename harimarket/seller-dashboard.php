@@ -411,7 +411,7 @@
                 <p>Buyer: <?= e($o['buyer_name']) ?><?= $o['buyer_phone'] ? ' (' . e($o['buyer_phone']) . ')' : '' ?></p>
                 <p><?php foreach ($orderItems[$o['id']] ?? [] as $it): ?><?= (int) $it['quantity'] ?> &times; <?= e($it['name']) ?><br><?php endforeach; ?></p>
                 <p>Total: ₱<?= number_format($o['total'], 2) ?> &middot; <?= date('M d, Y', strtotime($o['created_at'])) ?></p>
-                <p class="pickup-tag"><i class="iconoir-pin-alt"></i> <?= e($o['pickup_name'] ?? 'Pick-up point') ?></p>
+                <p class="pickup-tag"><i class="iconoir-pin"></i> <?= e($o['pickup_name'] ?? 'Pick-up point') ?></p>
                 <div class="order-actions">
                   <?php $nextBtns = ['placed' => [['preparing', 'Start preparing']], 'preparing' => [['ready_for_pickup', 'Mark ready for pick-up']]][$o['status']] ?? []; ?>
                   <?php foreach ($nextBtns as [$val, $label]): ?>
@@ -572,7 +572,7 @@
         <form method="POST">
           <input type="hidden" name="action" value="save_pickup">
           <div class="seller-settings-card">
-            <div class="profile-section-title"><i class="iconoir-pin-alt"></i> Pick-up Point</div>
+            <div class="profile-section-title"><i class="iconoir-pin"></i> Pick-up Point</div>
             <p class="muted-small">Buyers collect their orders here. It is shown on your products, in the cart and on every order.</p>
             <div class="profile-fields">
               <div class="profile-field">

@@ -131,7 +131,7 @@ $pageTitle = $product['name'];
           <?php endif; ?>
           <p class="page-product-description"><?= nl2br(htmlspecialchars($product['description'] ?? '')) ?></p>
           <div class="pickup-help">
-            <strong><i class="iconoir-pin-alt"></i> Pick-up point:</strong>
+            <strong><i class="iconoir-pin"></i> Pick-up point:</strong>
             <?= e($product['pickup_name'] ?? 'Not set by the seller yet') ?>
             <?= $product['pickup_hours'] ? '<br>Hours: ' . e($product['pickup_hours']) : '' ?>
             <?= $product['pickup_note'] ? '<br>' . e($product['pickup_note']) : '' ?>

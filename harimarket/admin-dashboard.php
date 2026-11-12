@@ -198,11 +198,11 @@ $pageTitle = 'Admin Dashboard';
             <?php if($stats['pending_sellers']): ?><span class="badge"><?= $stats['pending_sellers'] ?></span><?php endif; ?>
         </a>
         <a href="#registrations" onclick="showSection('registrations')">
-            <i class="iconoir-add-user"></i> Registrations
+            <i class="iconoir-user-plus"></i> Registrations
             <?php if($stats['registrations']): ?><span class="badge"><?= $stats['registrations'] ?></span><?php endif; ?>
         </a>
         <a href="#users" onclick="showSection('users')"><i class="iconoir-group"></i> Users</a>
-        <a href="admin-locations.php"><i class="iconoir-pin-alt"></i> Pick-up locations</a>
+        <a href="admin-locations.php"><i class="iconoir-pin"></i> Pick-up locations</a>
         <a href="#reports" onclick="showSection('reports')">
             <i class="iconoir-warning-triangle"></i> Reports
             <?php if($stats['reports']): ?><span class="badge"><?= $stats['reports'] ?></span><?php endif; ?>

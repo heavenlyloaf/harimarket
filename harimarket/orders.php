@@ -81,7 +81,7 @@ $pageTitle = 'Orders';
                     <?= (int) $it['quantity'] ?> &times; <a href="product.php?id=<?= (int) $it['product_id'] ?>"><?= e($it['name']) ?></a><br>
                   <?php endforeach; ?></p>
                   <p><strong>Date:</strong> <?= date('M d, Y', strtotime($o['created_at'])) ?></p>
-                  <p class="pickup-tag"><i class="iconoir-pin-alt"></i> <?= e($o['pickup_name'] ?? 'Pick-up point') ?></p>
+                  <p class="pickup-tag"><i class="iconoir-pin"></i> <?= e($o['pickup_name'] ?? 'Pick-up point') ?></p>
                   <?php if ($o['pickup_note']): ?><p class="muted-small"><?= e($o['pickup_note']) ?></p><?php endif; ?>
                 </div>
                 <div class="order-meta">

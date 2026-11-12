@@ -47,7 +47,7 @@ $pageTitle = $seller['store_name'];
           <img src="<?= htmlspecialchars($seller['avatar']) ?>" alt="Seller Avatar" class="profile-avatar">
           <div>
             <h2><?= htmlspecialchars($seller['store_name'] ?? $seller['full_name']) ?></h2>
-            <p class="pickup-tag"><i class="iconoir-pin-alt"></i> Pick-up: <?= e($seller['pickup_name'] ?? 'not set yet') ?><?= $seller['pickup_hours'] ? ' &middot; ' . e($seller['pickup_hours']) : '' ?></p>
+            <p class="pickup-tag"><i class="iconoir-pin"></i> Pick-up: <?= e($seller['pickup_name'] ?? 'not set yet') ?><?= $seller['pickup_hours'] ? ' &middot; ' . e($seller['pickup_hours']) : '' ?></p>
             <?php if ($seller['pickup_note']): ?><p class="muted-small"><?= e($seller['pickup_note']) ?></p><?php endif; ?>
             <p><strong>Rating:</strong> <?= stars((float)($seller['rating'] ?? 0)) ?></p>
             <p><strong>Member Since:</strong> <?= date('Y', strtotime($seller['created_at'])) ?></p>

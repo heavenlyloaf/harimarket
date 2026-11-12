@@ -96,7 +96,7 @@
           <div class="seller-group-head">
             <h3>Order <?= $i + 1 ?>: <?= e($g['store_name']) ?></h3>
             <?php if ($g['pickup_name']): ?>
-              <span class="pickup-tag"><i class="iconoir-pin-alt"></i> <?= e($g['pickup_name']) ?></span>
+              <span class="pickup-tag"><i class="iconoir-pin"></i> <?= e($g['pickup_name']) ?></span>
             <?php endif; ?>
           </div>
           <?php if ($g['pickup_hours'] || $g['pickup_note']): ?>

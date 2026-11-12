@@ -49,7 +49,7 @@
             <div class="seller-group-head">
               <h3><i class="iconoir-shop"></i> <?= e($g['store_name']) ?></h3>
               <?php if ($g['pickup_name']): ?>
-                <span class="pickup-tag"><i class="iconoir-pin-alt"></i> <?= e($g['pickup_name']) ?><?= $g['pickup_hours'] ? ' &middot; ' . e($g['pickup_hours']) : '' ?></span>
+                <span class="pickup-tag"><i class="iconoir-pin"></i> <?= e($g['pickup_name']) ?><?= $g['pickup_hours'] ? ' &middot; ' . e($g['pickup_hours']) : '' ?></span>
               <?php else: ?>
                 <span class="pickup-tag warn">This seller has not set a pick-up point yet</span>
               <?php endif; ?>

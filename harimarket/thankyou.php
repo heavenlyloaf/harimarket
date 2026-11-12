@@ -35,7 +35,7 @@ $pageTitle = 'Order placed';
               <div class="qr-target" data-code="<?= e($o['pickup_code']) ?>"></div>
               <h3>Order #<?= (int) $o['id'] ?></h3>
               <p><?= e($o['store_name']) ?></p>
-              <p class="pickup-tag"><i class="iconoir-pin-alt"></i> <?= e($o['pickup_name'] ?? 'Pick-up point') ?></p>
+              <p class="pickup-tag"><i class="iconoir-pin"></i> <?= e($o['pickup_name'] ?? 'Pick-up point') ?></p>
               <?php if ($o['pickup_note']): ?><p class="muted-small"><?= e($o['pickup_note']) ?></p><?php endif; ?>
               <p class="pickup-code"><?= e($o['pickup_code']) ?></p>
               <p>Total: <strong>₱<?= number_format($o['total'], 2) ?></strong></p>
