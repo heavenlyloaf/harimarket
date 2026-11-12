@@ -3033,3 +3033,163 @@ footer.footer {
 
 .sort-bar{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;font-size:.9rem}
 .sort-bar select{padding:.35rem .5rem;border:1px solid #ccc;border-radius:6px}
+
+/* ===== Live notifications: toast + offline bar ===== */
+.toast-box { position: fixed; top: 76px; right: 16px; z-index: 3000; display: flex; flex-direction: column; gap: 8px; max-width: min(360px, calc(100vw - 32px)); }
+.toast { display: block; padding: .75rem 1rem; background: var(--surface); color: var(--text); border-left: 4px solid var(--brand); border-radius: var(--radius-md); box-shadow: var(--shadow-2); text-decoration: none; font-size: .92rem; animation: toast-in .25s ease; }
+.toast:hover { background: var(--bg); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.offline-bar { position: sticky; top: 0; z-index: 3100; background: #856404; color: #fff; text-align: center; padding: .5rem 1rem; font-size: .9rem; }
+
+/* ===== Theme toggle ===== */
+.theme-toggle { position: fixed; right: 16px; bottom: 84px; z-index: 2500; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--muted); background: var(--surface); color: var(--text); font-size: 20px; line-height: 1; cursor: pointer; box-shadow: var(--shadow-2); }
+.theme-toggle:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+@media (min-width: 769px) { .theme-toggle { bottom: 20px; } }
+
+/* ===== Charts ===== */
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--gap-md); margin: var(--gap-md) 0; }
+.chart-card { background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--shadow-1); padding: 1rem; }
+.chart-card h3 { margin: 0 0 .5rem; font-size: 1rem; color: var(--brand); }
+.chart-box { position: relative; height: 240px; }
+.chart-msg { color: var(--text); opacity: .7; font-size: .9rem; margin: 0; }
+
+/* ===== Dark mode ===== */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #12151c;
+  --surface: #1c212b;
+  --muted: #3a4150;
+  --text: #e6e9ef;
+  --brand: #5aa9ff;
+  --brand-dark: #3d8fe6;
+  --shadow-1: 0 2px 6px rgba(0,0,0,.5);
+  --shadow-2: 0 6px 14px rgba(0,0,0,.6);
+}
+:root[data-theme="dark"] body { background: var(--bg); color: var(--text); }
+:root[data-theme="dark"] .page-card,
+:root[data-theme="dark"] header.navbar,
+:root[data-theme="dark"] .bottom-nav,
+:root[data-theme="dark"] .footer,
+:root[data-theme="dark"] .dropdown-menu,
+:root[data-theme="dark"] .modal-content,
+:root[data-theme="dark"] .dashboard-sidebar,
+:root[data-theme="dark"] .order-card,
+:root[data-theme="dark"] .product-card,
+:root[data-theme="dark"] table,
+:root[data-theme="dark"] .cart-item,
+:root[data-theme="dark"] .pickup-card,
+:root[data-theme="dark"] .qr-card { background: var(--surface); color: var(--text); border-color: var(--muted); }
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea { background: #151922; color: var(--text); border-color: var(--muted); }
+:root[data-theme="dark"] h1, :root[data-theme="dark"] h2, :root[data-theme="dark"] h3, :root[data-theme="dark"] h4,
+:root[data-theme="dark"] p, :root[data-theme="dark"] label, :root[data-theme="dark"] td, :root[data-theme="dark"] th { color: var(--text); }
+:root[data-theme="dark"] a { color: var(--brand); }
+:root[data-theme="dark"] .qr-box, :root[data-theme="dark"] .qr-svg { background: #fff; }
+:root[data-theme="dark"] img { opacity: .92; }
+
+/* ===== Dark mode: generated overrides for fixed-colour components ===== */
+:root[data-theme="dark"] .bubble-avatar-placeholder,
+:root[data-theme="dark"] .bubble-row:not(.mine) .bubble,
+:root[data-theme="dark"] .chat-compose,
+:root[data-theme="dark"] .chat-header,
+:root[data-theme="dark"] .chat-partner-info .role-badge,
+:root[data-theme="dark"] .chat-partner-placeholder,
+:root[data-theme="dark"] .convo-avatar-placeholder,
+:root[data-theme="dark"] .convo-card,
+:root[data-theme="dark"] .convo-card.unread,
+:root[data-theme="dark"] .loc-table,
+:root[data-theme="dark"] .msg-bav-placeholder,
+:root[data-theme="dark"] .msg-bubble-row:not(.mine) .msg-bubble,
+:root[data-theme="dark"] .msg-chat-header,
+:root[data-theme="dark"] .msg-chat-header .role-badge,
+:root[data-theme="dark"] .msg-compose,
+:root[data-theme="dark"] .msg-convo-avatar,
+:root[data-theme="dark"] .msg-convo-placeholder,
+:root[data-theme="dark"] .msg-panel,
+:root[data-theme="dark"] .msg-sidebar,
+:root[data-theme="dark"] .notif-card.unread,
+:root[data-theme="dark"] .page-card,
+:root[data-theme="dark"] .profile-field input,
+:root[data-theme="dark"] .profile-field input:focus,
+:root[data-theme="dark"] .qr-card,
+:root[data-theme="dark"] .qr-modal-box,
+:root[data-theme="dark"] .seller-field input,
+:root[data-theme="dark"] .seller-field select,
+:root[data-theme="dark"] .seller-field textarea,
+:root[data-theme="dark"] .seller-settings-card .profile-field input,
+:root[data-theme="dark"] .seller-upload-box,
+:root[data-theme="dark"] .summary-box,
+:root[data-theme="dark"] .thankyou-box
+{ background: var(--surface); }
+:root[data-theme="dark"] .categories .dropdown-toggle:hover,
+:root[data-theme="dark"] .convo-card:hover,
+:root[data-theme="dark"] .dashboard-sidebar a:hover,
+:root[data-theme="dark"] .dropdown-menu li:hover,
+:root[data-theme="dark"] .msg-convo-item:hover,
+:root[data-theme="dark"] .seller-upload-remove:hover
+{ background: #262d3a; }
+:root[data-theme="dark"] .bubble-avatar-placeholder,
+:root[data-theme="dark"] .bubble-row:not(.mine) .bubble,
+:root[data-theme="dark"] .cart-details .cart-price,
+:root[data-theme="dark"] .cart-line-total,
+:root[data-theme="dark"] .chat-back,
+:root[data-theme="dark"] .chat-back:hover,
+:root[data-theme="dark"] .chat-partner-info .role-badge,
+:root[data-theme="dark"] .chat-partner-placeholder,
+:root[data-theme="dark"] .checkout-field label,
+:root[data-theme="dark"] .convo-avatar-placeholder,
+:root[data-theme="dark"] .convo-card.unread .convo-preview,
+:root[data-theme="dark"] .convo-preview,
+:root[data-theme="dark"] .dropdown-menu .menu-item,
+:root[data-theme="dark"] .dropdown-menu a,
+:root[data-theme="dark"] .empty-state p.empty-title,
+:root[data-theme="dark"] .msg-bav-placeholder,
+:root[data-theme="dark"] .msg-bubble-row:not(.mine) .msg-bubble,
+:root[data-theme="dark"] .msg-chat-header .role-badge,
+:root[data-theme="dark"] .msg-convo-item.unread .msg-convo-preview,
+:root[data-theme="dark"] .msg-convo-placeholder,
+:root[data-theme="dark"] .msg-sidebar-header,
+:root[data-theme="dark"] .muted-small,
+:root[data-theme="dark"] .notif-icon-col,
+:root[data-theme="dark"] .order-info p,
+:root[data-theme="dark"] .order-info p strong,
+:root[data-theme="dark"] .order-steps li,
+:root[data-theme="dark"] .order-total,
+:root[data-theme="dark"] .page-heading .page-meta,
+:root[data-theme="dark"] .page-product-description,
+:root[data-theme="dark"] .page-product-rating,
+:root[data-theme="dark"] .payment-option,
+:root[data-theme="dark"] .profile-field label,
+:root[data-theme="dark"] .profile-meta-chip,
+:root[data-theme="dark"] .profile-meta-chip i,
+:root[data-theme="dark"] .profile-section-title i,
+:root[data-theme="dark"] .seller-field label,
+:root[data-theme="dark"] .seller-settings-card .profile-field label,
+:root[data-theme="dark"] .settings-group label,
+:root[data-theme="dark"] .summary-row,
+:root[data-theme="dark"] .summary-row.total,
+:root[data-theme="dark"] .thankyou-box .order-detail
+{ color: var(--text); }
+
+:root[data-theme="dark"] .notif-card.unread { background: #1f2a3d; }
+:root[data-theme="dark"] .convo-card.unread { background: #1f2a3d; }
+:root[data-theme="dark"] .pickup-tag { background: #1f3a2c; color: #bfe8cf; }
+:root[data-theme="dark"] .order-total { color: var(--brand); }
+:root[data-theme="dark"] .order-steps li { background: #2a313f; color: #aab2c0; }
+:root[data-theme="dark"] .order-steps li.done { background: #1f3a2c; color: #bfe8cf; }
+:root[data-theme="dark"] .order-steps li.current { background: #2f7d4f; color: #fff; }
+:root[data-theme="dark"] .dashboard-section, :root[data-theme="dark"] .dashboard-card { background: var(--surface); }
+:root[data-theme="dark"] .dashboard-sidebar a, :root[data-theme="dark"] .seller-override .dashboard-sidebar a, :root[data-theme="dark"] .admin-override .dashboard-sidebar a { color: var(--text); }
+:root[data-theme="dark"] .seller-field input, :root[data-theme="dark"] .seller-field select, :root[data-theme="dark"] .seller-field textarea,
+:root[data-theme="dark"] .profile-field input, :root[data-theme="dark"] .seller-upload-box { background: #151922; color: var(--text); border-color: var(--muted); }
+:root[data-theme="dark"] .qr-card svg, :root[data-theme="dark"] .qr-modal-box svg { background: #fff; padding: 8px; border-radius: 8px; }
+:root[data-theme="dark"] .loc-table, :root[data-theme="dark"] .loc-table td, :root[data-theme="dark"] .loc-table th { background: var(--surface); color: var(--text); border-color: var(--muted); }
+:root[data-theme="dark"] .seller-add-product-form,
+:root[data-theme="dark"] .seller-settings-card,
+:root[data-theme="dark"] .seller-upload-box { background: #181d27; border-color: var(--muted); }
+:root[data-theme="dark"] .seller-field label,
+:root[data-theme="dark"] .profile-field label { color: var(--text); }
+:root[data-theme="dark"] .seller-field input::placeholder,
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder { color: #7d8697; }

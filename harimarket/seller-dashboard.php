@@ -301,6 +301,7 @@
           <p>₱<?= number_format($earnings['total_all'], 2) ?></p>
         </div>
       </div>
+      <div class="chart-grid" id="chartGrid" aria-live="polite"></div>
       <div class="dashboard-section" id="products">
         <h3>My Products</h3>
         <form method="POST" enctype="multipart/form-data" class="seller-add-product-form">
@@ -760,5 +761,7 @@
   }
 
 </script>
+<script src="js/vendor/chart.umd.js"></script>
+<script src="js/charts.js"></script>
 </body>
 </html>

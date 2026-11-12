@@ -236,6 +236,7 @@ $pageTitle = 'Admin Dashboard';
             <p><?= $stats['products'] ?></p>
           </div>
         </div>
+        <div class="chart-grid" id="chartGrid" aria-live="polite"></div>
       </div>
 
       <!-- PRODUCTS APPROVAL -->
@@ -463,5 +464,7 @@ $pageTitle = 'Admin Dashboard';
     }
   });
 </script>
+<script src="js/vendor/chart.umd.js"></script>
+<script src="js/charts.js"></script>
 </body>
 </html>
