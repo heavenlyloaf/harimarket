@@ -22,7 +22,7 @@ HTML5, CSS3 (responsive), JavaScript (ES6+, Fetch API) | PHP 8 (PDO) | MySQL / M
 
 ## Run locally (XAMPP or `php -S`)
 1. Copy the `harimarket` folder into `htdocs` (or serve it with `php -S localhost:8000 -t harimarket`).
-2. Import the database: `mysql -u root -p < harimarket/sql/database.sql` (or import it in phpMyAdmin).
+2. Create an empty database (`CREATE DATABASE harimarket CHARACTER SET utf8mb4;`), then import `harimarket/sql/database.sql` into it (`mysql -u root -p harimarket < harimarket/sql/database.sql`, or use phpMyAdmin Import with the database selected).
 3. Copy `harimarket/config/config.example.php` to `harimarket/config/config.php` and set your database details.
 4. Create the first admin account (the password is never stored in the repository):
    `php harimarket/tools/create_admin.php`
