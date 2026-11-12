@@ -147,19 +147,35 @@ const sellerBtn  = document.getElementById('sellerBtn');
 const roleField  = document.getElementById('roleField');
 const fileInput  = document.getElementById('serUpload');
 const fileLabel  = document.getElementById('file-name');
-buyerBtn.addEventListener('click', () => {
-  buyerBtn.classList.add('active');
+const form = document.querySelector('.register-form');
+
+// Switching between Buyer and Seller starts a fresh form so no details carry over.
+const clearForm = () => {
+  form.querySelectorAll('input:not([type=hidden]), textarea').forEach((el) => {
+    if (el.type === 'file') el.value = '';
+    else el.value = '';
+  });
+  form.querySelectorAll('select').forEach((el) => { el.selectedIndex = 0; });
+  fileLabel.textContent = ' No file chosen';
+  document.querySelectorAll('.login-box > p').forEach((p) => p.remove());   // old error/success message
+};
+
+const setRole = (role, { clear = true } = {}) => {
+  const seller = role === 'seller';
+  if (clear && roleField.value !== role) clearForm();
+  buyerBtn.classList.toggle('active', !seller);
   buyerBtn.classList.remove('seller');
-  sellerBtn.classList.remove('active');
-  container.classList.remove('show-seller');
-  roleField.value = 'buyer';
-});
-sellerBtn.addEventListener('click', () => {
-  sellerBtn.classList.add('active', 'seller');
-  buyerBtn.classList.remove('active');
-  container.classList.add('show-seller');
-  roleField.value = 'seller';
-});
+  sellerBtn.classList.toggle('active', seller);
+  sellerBtn.classList.toggle('seller', seller);
+  container.classList.toggle('show-seller', seller);
+  roleField.value = role;
+};
+
+buyerBtn.addEventListener('click', () => setRole('buyer'));
+sellerBtn.addEventListener('click', () => setRole('seller'));
+// After a failed submit the page reloads: reopen on the role the person was using.
+<?php if (($_POST['role'] ?? '') === 'seller'): ?>setRole('seller', { clear: false });<?php endif; ?>
+
 fileInput.addEventListener('change', () => {
   const name = fileInput.files[0]?.name ?? null;
   fileLabel.textContent = ' ' + (name ?? 'No file chosen');
