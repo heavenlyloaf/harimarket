@@ -264,7 +264,7 @@
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
   <header class="navbar navbar--no-search">
     <div class="logo">
-      <img src="img/elements/header.png" alt="HariMarket Logo">
+      <a href="index.php" aria-label="Go to storefront"><img src="img/elements/header.png" alt="HariMarket Logo"></a>
     </div>
     <nav class="nav-icons">
       <a href="logout.php" aria-label="Log Out"><i class="iconoir-log-out"></i></a>
