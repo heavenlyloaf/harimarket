@@ -287,6 +287,13 @@
       </nav>
     </aside>
     <section class="dashboard-content">
+      <?php if (empty($profile['pickup_location_id'])): ?>
+        <div class="alert warning" role="alert" style="margin-bottom:1rem;">
+          <strong>Set your pick-up point to start selling.</strong>
+          Buyers can only see and order your products once you choose where they collect them.
+          <a href="#settings">Go to Settings</a>
+        </div>
+      <?php endif; ?>
       <div class="dashboard-row" id="overview">
         <div class="dashboard-card">
           <h3>Total Products</h3>
@@ -573,7 +580,7 @@
           <input type="hidden" name="action" value="save_pickup">
           <div class="seller-settings-card">
             <div class="profile-section-title"><i class="iconoir-pin"></i> Pick-up Point</div>
-            <p class="muted-small">Buyers collect their orders here. It is shown on your products, in the cart and on every order.</p>
+            <p class="muted-small">Buyers collect their orders here. It is shown on your products, in the cart and on every order. You can change it any time. Orders already placed keep the pick-up point they were ordered with.</p>
             <div class="profile-fields">
               <div class="profile-field">
                 <label for="pickupLoc">Campus pick-up point</label>

@@ -18,7 +18,7 @@ $sql = 'SELECT p.id, p.name, p.price, p.image, p.rating, sp.store_name, pl.name 
         FROM products p
         JOIN seller_profiles sp ON sp.user_id = p.seller_id AND sp.approved = 1
         LEFT JOIN pickup_locations pl ON pl.id = sp.pickup_location_id
-        WHERE p.stock > 0 AND p.status = "approved"';
+        WHERE p.stock > 0 AND p.status = "approved" AND sp.pickup_location_id IS NOT NULL';
 $params = [];
 if ($q !== '') {
     $like = '%' . addcslashes($q, '%_\\') . '%';

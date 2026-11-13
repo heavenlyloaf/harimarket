@@ -88,7 +88,8 @@ form textarea {
   margin-top: 20px;
 }
 
-.login-container.show-seller .register-form {
+.register-form[hidden] { display: none; }
+.register-form.seller-form {
   grid-template-columns: 1fr 1fr;
   column-gap: 40px;
   row-gap: 18px;
@@ -227,7 +228,10 @@ form textarea {
     max-width: 420px;
   }
 
-  .login-container.show-seller .register-form {
+  .register-form.seller-form {
     grid-template-columns: 1fr;
   }
 } 
+.form-col-title { margin: 0 0 10px; font-weight: 600; font-size: .85rem; color: #7a8499; text-transform: uppercase; letter-spacing: .04em; }
+.form-hint { margin: 10px 0 0; font-size: .8rem; color: #7a8499; }
+.register-form .register-btn { grid-column: 1 / -1; justify-self: center; }

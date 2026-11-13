@@ -12,7 +12,7 @@
       FROM   products p
       JOIN   seller_profiles sp ON sp.user_id = p.seller_id AND sp.approved = 1
       LEFT JOIN categories c  ON c.id = p.category_id
-      WHERE  p.stock > 0 AND p.status = "approved"
+      WHERE  p.stock > 0 AND p.status = "approved" AND sp.pickup_location_id IS NOT NULL
   ';
   if ($search !== '') {
       $like = '%' . addcslashes($search, '%_\\') . '%';

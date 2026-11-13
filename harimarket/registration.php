@@ -3,7 +3,6 @@ require_once 'config.php';
 if (currentUser()) redirect('index.php');
 $error   = '';
 $success = '';
-$locations = $pdo->query('SELECT id, name FROM pickup_locations WHERE is_active = 1 ORDER BY name')->fetchAll();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $role          = ($_POST['role'] ?? 'buyer') === 'seller' ? 'seller' : 'buyer';
     $full_name     = trim($_POST['full_name'] ?? '');
@@ -15,9 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $store_name    = trim($_POST['store_name']   ?? '');
     $contact       = trim($_POST['contact']      ?? '');
     $description   = trim($_POST['description']  ?? '');
-    $pickup_id     = (int) ($_POST['pickup_location_id'] ?? 0);
-    $pickup_note   = trim($_POST['pickup_note']  ?? '');
-    $pickup_hours  = trim($_POST['pickup_hours'] ?? '');
 
     if (!$full_name || !$email || !$password || !$student_no) {
         $error = 'Please fill in all required fields.';
@@ -29,8 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Passwords do not match.';
     } elseif ($role === 'seller' && !$store_name) {
         $error = 'Store name is required for seller registration.';
-    } elseif ($role === 'seller' && !$pickup_id) {
-        $error = 'Please choose your campus pick-up point.';
     } elseif ($role === 'seller' && empty($_FILES['serUpload']['name'])) {
         $error = 'Please upload your SER (Student Enrollment Record).';
     } else {
@@ -51,23 +45,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user_id = (int) $pdo->lastInsertId();
 
                 if ($role === 'seller') {
-                    $chkLoc = $pdo->prepare('SELECT 1 FROM pickup_locations WHERE id = ? AND is_active = 1');
-                    $chkLoc->execute([$pickup_id]);
-                    if (!$chkLoc->fetch()) throw new Exception('Please choose a valid pick-up point.');
-
                     [$ser_path, $ser_err] = saveUpload($_FILES['serUpload'], 'uploads/ser', 'ser_' . $user_id, true);
                     if ($ser_err) throw new Exception('SER file: ' . $ser_err);
 
                     $sp = $pdo->prepare(
-                        'INSERT INTO seller_profiles (user_id, store_name, description, ser_file, pickup_location_id, pickup_note, pickup_hours)
-                         VALUES (?, ?, ?, ?, ?, ?, ?)'
+                        'INSERT INTO seller_profiles (user_id, store_name, description, ser_file)
+                         VALUES (?, ?, ?, ?)'
                     );
-                    $sp->execute([$user_id, $store_name, $description ?: null, $ser_path, $pickup_id,
-                                  mb_substr($pickup_note, 0, 255) ?: null, mb_substr($pickup_hours, 0, 100) ?: null]);
+                    $sp->execute([$user_id, $store_name, $description ?: null, $ser_path]);
                 }
 
                 $pdo->commit();
-                $success = 'Registration submitted! Your account is pending administrator approval. Please wait for an admin to review your registration.';
+                $success = 'Registration submitted! Your account is pending administrator approval. Please wait for an admin to review your registration.' . ($role === 'seller' ? ' After you are approved, set your pick-up point in Settings before buyers can order from you.' : '');
             } catch (Exception $e) {
                 if ($pdo->inTransaction()) $pdo->rollBack();
                 $error = $e instanceof PDOException ? 'Something went wrong. Please try again.' : $e->getMessage();
@@ -87,43 +76,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script src="js/auth.js" defer></script>
 </head>
 <body>
-<div class="login-container" id="regContainer">
+<div class="login-container<?= (($_POST['role'] ?? '') === 'seller') ? ' show-seller' : '' ?>" id="regContainer">
   <div class="login-box">
     <img src="img/elements/header.png" alt="Logo">
-    <?php if ($error):   ?><p style="color:#c00;font-size:.9rem;margin-bottom:10px;"><?= htmlspecialchars($error) ?></p><?php endif; ?>
-    <?php if ($success): ?><p style="color:#155724;font-size:.9rem;margin-bottom:10px;"><?= $success ?></p><?php endif; ?>
+    <?php if ($error):   ?><p class="msg" style="color:#c00;font-size:.9rem;margin-bottom:10px;"><?= htmlspecialchars($error) ?></p><?php endif; ?>
+    <?php if ($success): ?><p class="msg" style="color:#155724;font-size:.9rem;margin-bottom:10px;"><?= $success ?></p><?php endif; ?>
     <div class="toggle">
       <button id="buyerBtn" class="active" type="button">Buyer</button>
       <button id="sellerBtn" type="button">Seller</button>
     </div>
-    <form class="register-form" method="POST" action="registration.php" enctype="multipart/form-data">
-      <input type="hidden" name="role" id="roleField" value="buyer">
-       <div class="form-col buyer-col">
-        <input type="text"     name="full_name"      placeholder="Full Name"      required
-               value="<?= htmlspecialchars($_POST['full_name'] ?? '') ?>">
-        <input type="email"    name="email"           placeholder="Email"          required
-               value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
-        <input type="password" name="password"        placeholder="Password"       required>
-        <input type="password" name="confirm"         placeholder="Confirm Password" required>
-        <input type="text"     name="student_number"  placeholder="Student Number" required
-               value="<?= htmlspecialchars($_POST['student_number'] ?? '') ?>">
+    <?php $startSeller = (($_POST['role'] ?? '') === 'seller'); ?>
+    <form class="register-form buyer-form" id="buyerForm" method="POST" action="registration.php" <?= $startSeller ? 'hidden' : '' ?>>
+      <input type="hidden" name="role" value="buyer">
+      <div class="form-col">
+        <input type="text"     name="full_name"      placeholder="Full Name"      required autocomplete="name"
+               value="<?= !$startSeller ? htmlspecialchars($_POST['full_name'] ?? '') : '' ?>">
+        <input type="email"    name="email"          placeholder="Email"          required autocomplete="email"
+               value="<?= !$startSeller ? htmlspecialchars($_POST['email'] ?? '') : '' ?>">
+        <input type="password" name="password"       placeholder="Password"       required autocomplete="new-password">
+        <input type="password" name="confirm"        placeholder="Confirm Password" required autocomplete="new-password">
+        <input type="text"     name="student_number" placeholder="Student Number" required
+               value="<?= !$startSeller ? htmlspecialchars($_POST['student_number'] ?? '') : '' ?>">
       </div>
-      <div class="form-col seller-col" id="sellerFields">
-        <input type="text" name="store_name"  placeholder="Store Name"
-               value="<?= htmlspecialchars($_POST['store_name'] ?? '') ?>">
-        <input type="tel"  name="contact"     placeholder="Contact Number"
-               value="<?= htmlspecialchars($_POST['contact'] ?? '') ?>">
-        <select name="pickup_location_id" aria-label="Campus pick-up point">
-          <option value="">Pick-up point on campus</option>
-          <?php foreach ($locations as $loc): ?>
-            <option value="<?= (int) $loc['id'] ?>" <?= (int)($_POST['pickup_location_id'] ?? 0) === (int)$loc['id'] ? 'selected' : '' ?>><?= e($loc['name']) ?></option>
-          <?php endforeach; ?>
-        </select>
-        <input type="text" name="pickup_hours" maxlength="100" placeholder="Pick-up hours (e.g. 10am-4pm)"
-               value="<?= e($_POST['pickup_hours'] ?? '') ?>">
-        <input type="text" name="pickup_note" maxlength="255" placeholder="Pick-up note (e.g. near the guard house)"
-               value="<?= e($_POST['pickup_note'] ?? '') ?>">
-        <textarea name="description" placeholder="Description (optional)" rows="3"><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
+      <button type="submit" class="register-btn">Register as Buyer</button>
+    </form>
+
+    <form class="register-form seller-form" id="sellerForm" method="POST" action="registration.php" enctype="multipart/form-data" <?= $startSeller ? '' : 'hidden' ?>>
+      <input type="hidden" name="role" value="seller">
+      <div class="form-col">
+        <p class="form-col-title">Your account</p>
+        <input type="text"     name="full_name"      placeholder="Full Name"      required autocomplete="name"
+               value="<?= $startSeller ? htmlspecialchars($_POST['full_name'] ?? '') : '' ?>">
+        <input type="email"    name="email"          placeholder="Email"          required autocomplete="email"
+               value="<?= $startSeller ? htmlspecialchars($_POST['email'] ?? '') : '' ?>">
+        <input type="password" name="password"       placeholder="Password"       required autocomplete="new-password">
+        <input type="password" name="confirm"        placeholder="Confirm Password" required autocomplete="new-password">
+        <input type="text"     name="student_number" placeholder="Student Number" required
+               value="<?= $startSeller ? htmlspecialchars($_POST['student_number'] ?? '') : '' ?>">
+      </div>
+      <div class="form-col">
+        <p class="form-col-title">Your store</p>
+        <input type="text" name="store_name" placeholder="Store Name" required
+               value="<?= $startSeller ? htmlspecialchars($_POST['store_name'] ?? '') : '' ?>">
+        <input type="tel"  name="contact"    placeholder="Contact Number"
+               value="<?= $startSeller ? htmlspecialchars($_POST['contact'] ?? '') : '' ?>">
+        <textarea name="description" placeholder="Store description (optional)" rows="3"><?= $startSeller ? htmlspecialchars($_POST['description'] ?? '') : '' ?></textarea>
         <div class="upload-wrapper">
           <p class="upload-label">Upload SER <span class="upload-hint">(Student Enrollment Record)</span></p>
           <label for="serUpload" class="upload-btn">
@@ -134,8 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <i class="iconoir-attachment"></i> No file chosen
           </div>
         </div>
+        <p class="form-hint">You will choose your pick-up point in Settings after you are approved, and you can change it any time.</p>
       </div>
-      <button type="submit" class="register-btn">Register</button>
+      <button type="submit" class="register-btn seller">Register as Seller</button>
     </form>
     <p class="register-link"><a href="login.php">Already have an account? Login</a></p>
   </div>
@@ -144,37 +142,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 const container  = document.getElementById('regContainer');
 const buyerBtn   = document.getElementById('buyerBtn');
 const sellerBtn  = document.getElementById('sellerBtn');
-const roleField  = document.getElementById('roleField');
+const buyerForm  = document.getElementById('buyerForm');
+const sellerForm = document.getElementById('sellerForm');
 const fileInput  = document.getElementById('serUpload');
 const fileLabel  = document.getElementById('file-name');
-const form = document.querySelector('.register-form');
 
-// Switching between Buyer and Seller starts a fresh form so no details carry over.
-const clearForm = () => {
-  form.querySelectorAll('input:not([type=hidden]), textarea').forEach((el) => {
-    if (el.type === 'file') el.value = '';
-    else el.value = '';
-  });
-  form.querySelectorAll('select').forEach((el) => { el.selectedIndex = 0; });
-  fileLabel.textContent = ' No file chosen';
-  document.querySelectorAll('.login-box > p').forEach((p) => p.remove());   // old error/success message
+const clearForm = (form) => {
+  form.querySelectorAll('input:not([type=hidden]), textarea').forEach((el) => { el.value = ''; });
+  if (form === sellerForm) fileLabel.textContent = ' No file chosen';
 };
 
+// Buyer and Seller are two separate forms: only one is shown, and switching starts the other one fresh.
 const setRole = (role, { clear = true } = {}) => {
   const seller = role === 'seller';
-  if (clear && roleField.value !== role) clearForm();
+  if (clear) { clearForm(buyerForm); clearForm(sellerForm); document.querySelectorAll('.login-box > p.msg').forEach((p) => p.remove()); }
+  buyerForm.hidden = seller;
+  sellerForm.hidden = !seller;
   buyerBtn.classList.toggle('active', !seller);
-  buyerBtn.classList.remove('seller');
   sellerBtn.classList.toggle('active', seller);
   sellerBtn.classList.toggle('seller', seller);
   container.classList.toggle('show-seller', seller);
-  roleField.value = role;
 };
 
-buyerBtn.addEventListener('click', () => setRole('buyer'));
-sellerBtn.addEventListener('click', () => setRole('seller'));
-// After a failed submit the page reloads: reopen on the role the person was using.
-<?php if (($_POST['role'] ?? '') === 'seller'): ?>setRole('seller', { clear: false });<?php endif; ?>
+buyerBtn.addEventListener('click', () => { if (!buyerBtn.classList.contains('active')) setRole('buyer'); });
+sellerBtn.addEventListener('click', () => { if (!sellerBtn.classList.contains('active')) setRole('seller'); });
+<?php if ($startSeller): ?>setRole('seller', { clear: false });<?php endif; ?>
 
 fileInput.addEventListener('change', () => {
   const name = fileInput.files[0]?.name ?? null;
