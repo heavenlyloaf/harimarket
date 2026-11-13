@@ -4,6 +4,7 @@ if (!isAdmin()) redirect('admin-login.php');
 
 $success = '';
 $error   = '';
+if (!empty($_SESSION['flash_success'])) { $success = $_SESSION['flash_success']; unset($_SESSION['flash_success']); }
 
 // Handle Actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -119,6 +120,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->prepare("UPDATE reports SET status = 'dismissed' WHERE id = ?")->execute([$rid]);
         $success = 'Report dismissed.';
     }
+    // Post/Redirect/Get: a refresh must not repeat the approval.
+    if ($success && !$error) { $_SESSION['flash_success'] = $success; redirect('admin-dashboard.php'); }
 }
 
 // Fetch Data

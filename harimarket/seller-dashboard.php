@@ -3,6 +3,7 @@
   $user = requireLogin('seller');
   $success = '';
   $error   = '';
+  if (!empty($_SESSION['flash_success'])) { $success = $_SESSION['flash_success']; unset($_SESSION['flash_success']); }
   $sp = $pdo->prepare('SELECT * FROM seller_profiles WHERE user_id = ?');
   $sp->execute([$user['id']]);
   $profile = $sp->fetch();
@@ -158,6 +159,8 @@
               $success = 'Settings saved.';
           }
       }
+      // Post/Redirect/Get: a refresh must not send the form (and its file) again.
+      if ($success && !$error) { $_SESSION['flash_success'] = $success; redirect('seller-dashboard.php'); }
   }
   $selected_user = isset($_GET['chat_with']) ? (int)$_GET['chat_with'] : null;
   if ($selected_user) {
