@@ -1,4 +1,3 @@
-<?php?>
 <footer class="footer">
   <div class="footer-left">
     <h3><img src="img/elements/footer.png" alt="Footer_HariMarket"></h3>
