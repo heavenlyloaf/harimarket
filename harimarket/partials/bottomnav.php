@@ -41,6 +41,9 @@
     </button>
     <ul class="dropdown-menu" role="menu" aria-labelledby="bottomUserMenuButton">
       <?php if ($user): ?>
+        <?php if (($user['role'] ?? '') === 'seller' || ($user['role'] ?? '') === 'admin'): ?>
+          <li><a role="menuitem" href="<?= $user['role'] === 'admin' ? 'admin-dashboard.php' : 'seller-dashboard.php' ?>" class="menu-item"><i class="iconoir-home"></i> Dashboard</a></li>
+        <?php endif; ?>
         <li><a role="menuitem" href="profile.php"  class="menu-item"><i class="iconoir-user"></i> Profile</a></li>
         <li><a role="menuitem" href="orders.php"   class="menu-item"><i class="iconoir-shopping-bag"></i> Orders</a></li>
         <li><a role="menuitem" href="logout.php"   class="menu-item danger"><i class="iconoir-log-out"></i> Log Out</a></li>

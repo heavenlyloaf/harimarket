@@ -3,6 +3,9 @@
       <a href="index.php"><img src="img/elements/header.png" alt="HariMarket Logo"></a>
     </div>
     <nav class="nav-icons">
+      <?php if (in_array($user['role'] ?? '', ['seller', 'admin'], true)): ?>
+      <a href="<?= $user['role'] === 'admin' ? 'admin-dashboard.php' : 'seller-dashboard.php' ?>" aria-label="Dashboard" title="Dashboard"><i class="iconoir-home"></i></a>
+      <?php endif; ?>
       <a href="cart.php" aria-label="Cart"><i class="iconoir-cart"></i></a>
       <a href="messages.php" aria-label="Messages"><i class="iconoir-message"></i></a>
       <a href="notifications.php" aria-label="Notifications" class="notif-icon-wrap">
@@ -19,6 +22,9 @@
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="userMenuButton">
           <?php if ($user): ?>
+            <?php if (in_array($user['role'] ?? '', ['seller', 'admin'], true)): ?>
+              <li><a role="menuitem" href="<?= $user['role'] === 'admin' ? 'admin-dashboard.php' : 'seller-dashboard.php' ?>" class="menu-item"><i class="iconoir-home"></i> Dashboard</a></li>
+            <?php endif; ?>
             <li><a role="menuitem" href="profile.php"  class="menu-item"><i class="iconoir-user"></i> Profile</a></li>
             <li><a role="menuitem" href="orders.php"   class="menu-item"><i class="iconoir-shopping-bag"></i> Orders</a></li>
             <li><a role="menuitem" href="logout.php"   class="menu-item danger"><i class="iconoir-log-out"></i> Log Out</a></li>
