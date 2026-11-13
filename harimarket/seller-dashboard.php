@@ -341,12 +341,12 @@
             </div>
             <div class="seller-field seller-field-full">
               <label>Product Image</label>
-              <div class="seller-upload-box" id="productUploadBox">
+              <label class="seller-upload-box" id="productUploadBox" for="productImageInput" tabindex="0">
                 <i class="iconoir-upload" style="font-size:1.4rem;color:#c0392b;"></i>
                 <span class="seller-upload-text">Click to choose image</span>
-                <span class="seller-upload-hint">JPG, PNG, WEBP accepted</span>
-                <input type="file" name="product_image" id="productImageInput" accept="image/jpeg,image/png,image/webp" style="display:none;">
-              </div>
+                <span class="seller-upload-hint">JPG, PNG or WEBP, up to 2 MB</span>
+              </label>
+              <input type="file" name="product_image" id="productImageInput" accept="image/jpeg,image/png,image/webp" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;" tabindex="-1">
               <div class="seller-upload-preview" id="productPreviewWrap" style="display:none;">
                 <img id="productPreviewImg" src="" alt="Preview">
                 <button type="button" class="seller-upload-remove" id="productRemoveBtn">
@@ -733,9 +733,15 @@
   const previewImg     = document.getElementById('productPreviewImg');
   const removeBtn      = document.getElementById('productRemoveBtn');
   if (productInput) {
-    productBox.addEventListener('click', () => productInput.click());
+    // The label opens the picker natively. Enter/Space does the same for keyboard users.
+    productBox.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); productInput.click(); } });
     productInput.addEventListener('change', function () {
       if (this.files && this.files[0]) {
+        if (this.files[0].size > 2 * 1024 * 1024) {
+          alert('This image is larger than 2 MB. Please choose a smaller one.');
+          this.value = '';
+          return;
+        }
         const reader = new FileReader();
         reader.onload = e => {
           previewImg.src = e.target.result;
