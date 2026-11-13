@@ -72,8 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="icon" type="image/x-icon" href="img/elements/favicon.png">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/iconoir-icons/iconoir@main/css/iconoir.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/auth.css?v=<?= (int) @filemtime(__DIR__ . '/css/auth.css') ?>">
   <script src="js/auth.js" defer></script>
+  <style>.register-form[hidden]{display:none !important}</style>
 </head>
 <body>
 <div class="login-container<?= (($_POST['role'] ?? '') === 'seller') ? ' show-seller' : '' ?>" id="regContainer">
