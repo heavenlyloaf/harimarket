@@ -98,7 +98,7 @@ git clone https://github.com/heavenlyloaf/harimarket.git
 
 1. Copy the `harimarket` folder into XAMPP's `htdocs` folder (or serve it with the built-in server:
    `php -S localhost:8000 -t harimarket`).
-2. Create and import the database (see [Database setup](#database-setup)).
+2. Create an empty database and import `database.sql` (see [Database setup](#database-setup)).
 3. Copy `harimarket/config/config.example.php` to `harimarket/config/config.php` and enter your
    database details. This file is git-ignored; never commit it.
 4. Create the first administrator (the password is never stored in the repository):
@@ -114,21 +114,27 @@ git clone https://github.com/heavenlyloaf/harimarket.git
 
 The full schema (12 tables, constraints and reference data) is in
 [`harimarket/sql/database.sql`](harimarket/sql/database.sql). It contains **no user accounts**.
+The script does not create the database itself, so it also works on shared hosting.
 
-**Option A – command line**
+**Local (command line)**
 ```bash
-mysql -u root -p < harimarket/sql/database.sql
+mysql -u root -p -e "CREATE DATABASE harimarket CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+mysql -u root -p harimarket < harimarket/sql/database.sql
 ```
-The script creates the `harimarket` database, all tables, the five product categories and three
-sample pick-up locations.
 
-**Option B – phpMyAdmin**
-1. Create an empty database named `harimarket` (collation `utf8mb4_unicode_ci`).
+**phpMyAdmin / shared hosting (e.g. InfinityFree)**
+1. Create an empty database (the host usually creates it for you).
 2. Select it, open **Import**, and choose `database.sql`.
+3. Put the host, database name, user and password in `config/config.php`.
 
-**Shared hosting (e.g. InfinityFree):** the host creates the database for you and does not allow
-`CREATE DATABASE`/`USE`. Delete those two lines at the top of the file, select your database in
-phpMyAdmin, and import. Put the host, database name, user and password in `config/config.php`.
+The script creates all tables, the five product categories and three sample pick-up locations.
+
+**Optional demo records:** [`harimarket/sql/sample-data.sql`](harimarket/sql/sample-data.sql) adds
+2 demo sellers, 2 demo buyers, 5 products and 4 orders (one in each state), reviews, chat messages,
+notifications and a report, so the whole flow can be shown. Import it after `database.sql`,
+**for local testing only** (not on the live site). All demo accounts use the password
+`Demo@12345`: `seller1@demo.test`, `seller2@demo.test`, `buyer1@demo.test`, `buyer2@demo.test`.
+The administrator is not included; create it with `php harimarket/tools/create_admin.php`.
 
 Tables: `users`, `seller_profiles`, `pickup_locations`, `categories`, `products`, `cart`, `orders`,
 `order_items`, `messages`, `notifications`, `reviews`, `reports`. See `docs/diagrams/erd.png`.
@@ -143,7 +149,7 @@ harimarket/
 │   ├── config/            config.example.php (config.php is git-ignored)
 │   ├── css/  js/          Stylesheets and scripts (js/vendor holds third-party libraries)
 │   ├── partials/          Shared head, navbar, bottom navigation, footer, alerts
-│   ├── sql/database.sql   Database schema and reference data
+│   ├── sql/              database.sql (schema) and sample-data.sql (optional demo records)
 │   ├── tools/             create_admin.php (command-line only)
 │   └── uploads/           User uploads (contents are git-ignored; .htaccess blocks PHP execution)
 └── docs/
