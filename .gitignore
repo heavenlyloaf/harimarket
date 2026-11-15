@@ -15,7 +15,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Dependencies and logs
+# Dependencies and logs (js/vendor holds the bundled browser libraries and MUST stay tracked)
 node_modules/
-vendor/
+/vendor/
 *.log
