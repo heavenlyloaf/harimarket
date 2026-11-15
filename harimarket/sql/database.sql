@@ -1,10 +1,9 @@
 -- HariMarket database schema (MySQL / MariaDB)
--- Import: mysql -u root -p < sql/database.sql
+-- Import into an EMPTY database that already exists and is selected:
+--   local:   CREATE DATABASE harimarket CHARACTER SET utf8mb4; then mysql -u root -p harimarket < sql/database.sql
+--   hosting: select your database in phpMyAdmin, then Import this file.
 -- Contains structure and reference data only (categories, sample pick-up locations).
 -- No user accounts are included. Create the first admin with: php tools/create_admin.php
-
-CREATE DATABASE IF NOT EXISTS `harimarket` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `harimarket`;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -27,7 +26,7 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_users_email` (`email`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `pickup_locations` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -36,7 +35,7 @@ CREATE TABLE `pickup_locations` (
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_pickup_name` (`name`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `seller_profiles` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -55,14 +54,14 @@ CREATE TABLE `seller_profiles` (
   KEY `fk_sp_location` (`pickup_location_id`),
   CONSTRAINT `fk_sp_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_sp_location` FOREIGN KEY (`pickup_location_id`) REFERENCES `pickup_locations` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `categories` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(80) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_category_name` (`name`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `products` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -82,7 +81,7 @@ CREATE TABLE `products` (
   KEY `fk_products_category` (`category_id`),
   CONSTRAINT `fk_products_seller` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_products_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `cart` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -95,7 +94,7 @@ CREATE TABLE `cart` (
   KEY `fk_cart_product` (`product_id`),
   CONSTRAINT `fk_cart_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_cart_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- One order per seller. The pick-up point is copied from the seller at checkout.
 CREATE TABLE `orders` (
@@ -116,7 +115,7 @@ CREATE TABLE `orders` (
   CONSTRAINT `fk_orders_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_orders_seller` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_orders_location` FOREIGN KEY (`pickup_location_id`) REFERENCES `pickup_locations` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `order_items` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -129,7 +128,7 @@ CREATE TABLE `order_items` (
   KEY `fk_oi_product` (`product_id`),
   CONSTRAINT `fk_oi_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_oi_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `messages` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -149,7 +148,7 @@ CREATE TABLE `messages` (
   CONSTRAINT `fk_msg_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_msg_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_msg_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `notifications` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -161,7 +160,7 @@ CREATE TABLE `notifications` (
   PRIMARY KEY (`id`),
   KEY `fk_notif_user` (`user_id`),
   CONSTRAINT `fk_notif_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- A review is allowed only for a picked-up order that contains the product.
 CREATE TABLE `reviews` (
@@ -180,7 +179,7 @@ CREATE TABLE `reviews` (
   CONSTRAINT `fk_rev_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_rev_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_rev_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `reports` (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -198,7 +197,7 @@ CREATE TABLE `reports` (
   CONSTRAINT `fk_rep_reporter` FOREIGN KEY (`reporter_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_rep_user` FOREIGN KEY (`reported_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_rep_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
